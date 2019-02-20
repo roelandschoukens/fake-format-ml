@@ -18,13 +18,15 @@ def _flank_test(left, right):
     
     returns if we are left-flanking and if we are _followed by_ punctuation """
     
-    # we will follow CommonMark:
-    # A left-flanking delimiter run is a delimiter run that is (a) not followed by Unicode whitespace, and 
+    # we will follow CommonMark specification for flank tests:
+    # A left-flanking delimiter run is a delimiter run that is
+    # (a): not followed by Unicode whitespace, and 
     if PAT_WHITESPACE.match(right): return False, False
     
-    # (b) either not followed by a punctuation character,
-    # or preceded by Unicode whitespace
-    # or [preceded by] a punctuation character.
+    # (b):
+    #  - either not followed by a punctuation character,
+    #  - or preceded by Unicode whitespace
+    #  - or [preceded by] a punctuation character.
     r_punct = bool(PAT_CMM_PUNCT.match(right))
     if not r_punct: return True, False
     if PAT_WHITESPACE.match(left): return True, r_punct
