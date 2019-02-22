@@ -115,7 +115,7 @@ class LineToken:
         
 _PAT_M_QUOTE = _re.compile(r'\'|"|\\.|\n')
 """ Unicode tag: {U+1234} in text represents an Unicode character. """
-_PAT_UCHAR_TAG = _re.compile(r'[uU]+[a-fA-F0-9]{2,6}\}')
+_PAT_UCHAR_TAG = _re.compile(r'[uU]\+[a-fA-F0-9]{2,6}\}')
 """ Unicode char after backslash: x12, u1234, U123456 """
 _PAT_UCHAR_QUOTE = _re.compile(r'U[a-fA-F0-9]{6}|u[a-fA-F0-9]{4}|[xX][a-fA-F0-9]{2}')
 """ note (*1) """
@@ -676,7 +676,7 @@ class Lineparser:
         um = _PAT_UCHAR_TAG.match(content, pos + 1)
         if um:
             self._append_text(chr(int(um.group()[2:-1], 16)))
-            return pos + 1 + len(um)
+            return pos + 1 + len(um.group())
         
         pos, el = self._consume_tag(content, pos)
         self._set_draft_tag(el)
