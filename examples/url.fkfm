@@ -1,0 +1,41 @@
+URLs
+====
+
+Urls are encosed in pointy brackets: <http://www.example.org/>, as mentioned
+in RFC 2396. That same RFC recommends percent-encoding angle brackets in URLs for this
+exact reason.
+
+An URL can appear by itself, as above, then the link text is the same as the URL. But often
+it is combined with another element. Then the URL appears after the element, as is customary
+in email headers.
+
+ - A generic span: [Example] <http://www.example.org/>
+ - Or any other kind: **Example** <http://www.example.org/>,  `Example` <http://www.example.org/>
+ - A tag without content: {em} <http://www.example.org/>, as with bare URLs the text will then be
+   the URL.
+ - Tags which are empty, in this case an image: {<smile.png> .emoticon} <http://www.example.org/>
+
+URLs in tags
+============
+
+If it shows up by itself it is by default the `src` attribute: {<smile.png>}
+
+It can show up as attribute value, so the previous one is equivalent to {src=<smile.png>}. Appending an URL
+after an element is equivalent to setting the `href` attribute, so {em} [link] <http://www.example.org/>
+and *link* <http://www.example.org/> are equivalent to {em href=<http://www.example.org/>} [link].
+
+Setting a `src` attribute makes a tag an image if the tag name is not otherwise specified.
+
+No unmarked URLs
+================
+
+Fakeformat will not attempt to find urls without special markings. So
+https://example.org will never turn into an URL.
+
+This solves a lot of hairy issues whether or not punctuation will be part of the URL.
+for instance, how about the question mark in https://example.org? Requiring a delimiter
+solves this problem.
+
+And many documents contain relative URLs, or URLs with only a path. These are much harder to
+automagically recognise.
+

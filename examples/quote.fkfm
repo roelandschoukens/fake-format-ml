@@ -1,0 +1,19 @@
+Quotes are created using right angle brackets. If you’re old enough you’ll remember
+this from emails. The space after the angle bracket is optional.
+
+> Quotes are conventionally created using right angle brackets.
+> They may contain other blocks, and paragraphs.
+>
+> This is the next paragraph.
+
+You may replace the angle bracket with a space in subsequent lines.
+
+> Indent with
+  spaces
+  and not carets
+
+Text in a quote with a single paragraph do not ordinarily wrapped in
+a `p` element. You may use a block tag to create a `p` anyway:
+
+>{.pclass}
+>This is a paragraph because of the tag.

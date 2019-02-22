@@ -1,0 +1,22 @@
+Spacing between tag, element and URL is ignored. Compare
+
+  - {em}[foo]<example.org> {em}[foo]<example.org> bar
+  - {em} [foo] <example.org> {em} [foo] <example.org> bar
+
+{}
+ 
+  - {em}[foo] {em}[foo] bar
+  - {em} [foo] {em} [foo] bar
+
+{}
+ 
+  - {em}<example.org> {em}<example.org> bar
+  - {em} <example.org> {em} <example.org> bar
+
+{}
+
+Spacing around tags is preserved even if the tag is void:
+
+ - Empty tag {} text
+ - Tag without span {b} text
+ - Two tags without span {b} {b} text

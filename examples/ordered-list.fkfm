@@ -1,0 +1,31 @@
+Ordered lists
+=============
+
+No surprises here:
+
+1. decimal
+2. decimal
+
+a. alphanumeric
+b. alphanumeric
+
+Roman lists present some ambiguity, this is why we must break the list above.
+We only recognise I, V, and X as roman bullets to get less ambiguity
+
+i. roman first item
+ii. roman
+    second item
+iii. roman third item
+
+01. with leading zero
+02. with leading zero
+
+If bullets vary in length they must align left to a fixed margin:
+
+    8. Item
+    9. Item
+    10. Item
+    11. Item
+
+Note in the example above that Fakeformat doesn’t care about the actual numbers; the
+list in the output just starts at 1.

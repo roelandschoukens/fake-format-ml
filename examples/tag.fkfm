@@ -1,0 +1,48 @@
+Basic tag structure
+===================
+
+Tags are structures enclosed in braces `{}`, providing meta data about subsequent blocks or inline tags.
+
+The following construct may appear inside a tag:
+
+    - `tag`: a single _token_, which gives the tag name. If it occurs it must be the first construct in the tag.
+    - `key=value`: A key/value pair, providing an attribute value. The value part can be expressed as:
+        - a single token, eg. `width=200`
+        - a quoted string, eg. `width="200"` or `width='200'`
+        - an URL, eg. `href=<url>`
+    - `.class-name`: Shorthand for `class=class-name`
+    - `#id-name`: Shorthand for `id=id-name`
+    - `<url>`: Shorthand for `href=<url>`
+    - `"description"`: Shorthand for `title="description"`
+
+A _token_ consists of work characters (letters, digits and underscore `_`), dash punctuation and
+connector punctuation (unicode categories `Pd` and `Pc`).
+
+Tagging blocks
+==============
+
+A block tag appears by itself on one line, before the start of a block. That is almost always
+after an empty line. To tag a block, the block tag must have the same indentation as the parent
+of that block.
+
+{quote}
+    this is a generic block with an tag name.
+
+A block tag with an indent is assumed to be inside a generic block with that indent:
+
+  {#block-2}
+      This is a block with another ID
+  
+  This is the same parent block as the previous one.
+
+And you may have nested blocks defined by tags:
+
+{quote.block-1}
+   {.block-2}
+      in block 2
+
+Block tags on the same indent level are merged:
+
+{.q-class}
+{#best-quote}
+> Our quote

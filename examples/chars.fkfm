@@ -1,0 +1,20 @@
+Characters
+==========
+
+Three dots ... will make an ellipsis. Dashes -- --- will make en and em dashes.
+An escaped line break\
+makes a hard break in the output.
+
+    *
+
+A dingbat in its own line will be centred in the output. An asterisk produces a
+dingbat dependent on parser settings.
+
+Unicode code points
+-------------------
+
+You can spell out Unicode code points with a tag-like construct: {U+2603} is an
+alternative way to write ☃.
+
+The line parser considers {U+2603} just a character, and not an element. It is
+also not a tag, you can’t have other tokens inside the brackets.

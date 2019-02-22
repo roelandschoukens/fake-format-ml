@@ -1,0 +1,12 @@
+The empty tag `{}` by definition produces no output. It can however be used
+to manipulate the block parser or line parser. In this example we use it to
+interrupt an ordered list.
+
+ 1. item
+ 2. item
+ 3. item
+
+{}
+
+ 1. item
+ 2. item

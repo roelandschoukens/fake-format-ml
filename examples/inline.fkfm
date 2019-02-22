@@ -1,0 +1,43 @@
+Inline elements
+===============
+
+Italic and bold
+---------------
+
+These are created by surrounding text with `*` and `_` for _italic_, and `**` and `__` for __bold__.
+
+We use the same flanking tests as CommonMark, so `_` will not create italic in the middle of a word
+while `*` will. In general, both must be stuck to the left or the right of a word to respectively start
+and end the element.
+
+So: word wo__rd word word__ shows underscores, while wo**rd bold wor**d produces bold.
+
+Italic and bold may be combined: `***` will open italic and bold, and may be closed in either order.
+Similarly it can close opened italic and bold tags at once.
+
+So, for example:
+  - *text **text*** and **text *text***
+  - ***text** text* and ***text* text**
+  - just bold + italic ***text***
+  - but, counter-example: *text *text *text***. That did not work
+
+Strike through
+--------------
+
+Two tildes `~~` will generate a ~~span of text~~ which is struck through.
+
+Code span
+---------
+
+`A code span` is surrounded by backticks (`` ` ``). You may use any number of backticks, this determines
+how many you need to close the span. There are no structures or escape sequences inside backticks. Space
+will be stripped from start and end, enabling the single backtick in the code span above.
+
+There are no flank tests for backtick, they’ll start a code span anywhere.
+
+Generic span
+------------
+
+A [generic span], produced by square brackets `[]`, can be used to group text, and attach tags. For these cases
+where we can’t have fake format syntax: {sup} [superscript].
+

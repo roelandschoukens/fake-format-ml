@@ -1,0 +1,25 @@
+Here is a code block. Code blocks in Fakeformat are always 'fenced'. An plain indented block
+will be translated in a `blockquote`, not a code block.
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    printf("Hello World\n");
+    return 0;
+}
+```
+
+As with other blocks you can nest this inside an indented block.
+
+{style="background: #ffa;"}
+    ```c
+    #include <stdio.h>
+
+    int main(void)
+    {
+        printf("Hello World\n");
+        return 0;
+    }
+    ```

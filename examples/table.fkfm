@@ -1,0 +1,18 @@
+Tables can be created using tags. A list tagged with `{tr}` will create `td`
+elements instead of `li`. And `#` bullets produce table headings:
+
+{table}
+    {tr}
+        # col 1
+        # col 2
+        # col 3
+        
+    {tr}
+        - val A1
+        - val A2
+        - val A3
+        
+    {tr}
+        - val B1
+        - val B2
+        - val B3
