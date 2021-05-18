@@ -27,9 +27,22 @@ class HtmlSink:
     def __init__(self, out):
     
         # settings
-        """ Map to handle specific tags with your own functions """
+        """ Map to handle specific tags with your own functions
+
+        the signature of a tag hook is:
+            tag_suffix = hook(element, write_function)
+            
+            You can call write_function(str) to prepend output, and return
+            tag_suffix to append output to this tag.
+        """
         self.tag_hooks = {}
-        """ Hook to handle URLs, may be used to give meaning to 'special' urls """
+        """ Hook to handle URLs, may be used to give meaning to 'special' urls
+
+            the signature of the url hook is:
+                new_url = url_hook(old_url, attribute_name, element)
+                
+                Conventionally attribute_name would be either 'href' or 'src'.
+        """
         self.url_hook = None
         """ function to generate notes markers in the running text, always gets an 1-based counter """
         self.make_note_link_text = lambda x : '*'+str(x)
@@ -121,7 +134,7 @@ class HtmlSink:
     def _translate_to_html(self, f):
         """ translate some constructs to html
         
-        This may change tags, wrap tags (using f.suffix) and make up extra content
+        This may change tags, wrap tags (using f.prefix and f.suffix) and make up extra content
         (by returning it)
         """
     
@@ -165,19 +178,21 @@ class HtmlSink:
             classes.append('code')
         elif tag == 'caption-img':
             # split in image and the paragraph for the caption
+            # this is not ideal since it doesn't allow assigning any
+            # properties to either the surrounding table or the caption paragraph.
             img_el = elements.FFElement(None)
             img_el.merge(f.el)
             img_el.tag = 'img'
-            self.out.write('<table class="caption-image"><tr><td>')
+            self.out.write('<div class="caption-image"><figure>\n')
             attr.clear()
             classes.clear()
             f.el.id = None
-            tag = 'p'
             # recursive call (!) to create <img> with all the given attributes
             self.start_element(img_el, empty=True)
             self.end_element(img_el, empty=True)
-            self.out.write('</td></tr>\n<tr><td>')
-            f.suffix += '</td></tr></table>'
+            self.out.write('\n')
+            tag = 'figcaption'
+            f.suffix += '\n</figure></div>'
         elif tag == 'notelink':
             nid = attr['note-id']
             del attr['note-id']
@@ -230,7 +245,7 @@ class HtmlSink:
         
         h = self.tag_hooks.get(f.el.tag)
         if h:
-            suffix = h(f.el)
+            suffix = h(f.el, self.out.write)
             if suffix:
                 f.suffix += suffix
 

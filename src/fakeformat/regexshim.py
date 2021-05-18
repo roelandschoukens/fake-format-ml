@@ -13,8 +13,8 @@ except:
     _RE_P = _re.compile(r'\\[pP]\{[A-Za-z]+\}')
     
     def _filter(exp):
-        exp = _RE_PZ.sub(r'\s', exp)
-        exp = _RE_N_PZ.sub(r'\S', exp)
+        exp = _RE_PZ.sub(r'\\s', exp)
+        exp = _RE_N_PZ.sub(r'\\S', exp)
         exp = _RE_P.sub('', exp)
         return exp
     

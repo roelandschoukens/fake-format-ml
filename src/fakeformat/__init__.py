@@ -78,21 +78,7 @@ class FakeFormatBase:
             # blank line.
             self.blank_flag = True
             self.break_p()
-            
-            # emit any pending block tags as nested tags
-            # first strip void tags
-            pbt = self.pending_block_tags
-            while pbt and pbt[-1].is_void():
-                pbt.pop()
-            
-            if pbt:
-                for t in pbt[:-1]:
-                    self.sink.start_element(t)
-                self.do_block(pbt[-1])
-                for t in reversed(pbt[:-1]):
-                    self.sink.start_element(t)
-                
-            self.pending_block_tags = []
+            self.handle_empty_blocktag()
                 
         else:
 
@@ -270,6 +256,23 @@ class FakeFormatBase:
         self.pending_content = lines
         
 
+    def handle_empty_blocktag(self):
+        """ Handle empty block tags before a blank line or EOF """
+        # emit any pending block tags as nested tags
+        # first strip void tags
+        pbt = self.pending_block_tags
+        while pbt and pbt[-1].is_void():
+            pbt.pop()
+        
+        if pbt:
+            for t in pbt[:-1]:
+                self.sink.start_element(t)
+            self.do_block(pbt[-1])
+            for t in reversed(pbt[:-1]):
+                self.sink.start_element(t)
+            
+        self.pending_block_tags = []
+    
     def flush_pending_block(self, for_child_block):
         """ Feed the pending block to the line parser and send to output """
 #        # any block with child blocks must have paragraphs
@@ -286,7 +289,7 @@ class FakeFormatBase:
         
         if p_tag:
             # create block images: no tag name, and src attribute
-            if not p_tag.tag and 'src' in p_tag.attr:
+            if (not p_tag.tag or p_tag.tag == 'img') and 'src' in p_tag.attr:
                 p_tag.tag = 'caption-img'
 
         # create a paragraph if necessary
@@ -323,6 +326,7 @@ class FakeFormatBase:
     def parse_eof(self):
         """ end of file, output outstanding line buffer and close all blocks """
         self.break_p()
+        self.handle_empty_blocktag()
 
         while len(self.stack) > 1:
             self.end_block()

@@ -649,25 +649,29 @@ class Lineparser:
         
     def do_url(self, content, pos, group_index, m):
         pos, url = self._consume_url(content, pos + 1)
-        # Check if we just closed an element
-        # this may return the draft token. Instantiate that one.
+        
+        # Trailing element. That might be a draft token
         tk = self.top().trailing_ignore_whitespace()
-        draft_tk = self.draft_el_token
-        self._flush_draft_el()
-
-        # only merge if it doesn't already have an href attribute
+        still_empty_tk = self.draft_el_token
+        
+        # Only consider this element if it doesn't already have an href attribute
         if tk and (tk.type != _ELEMENT or 'href' in tk.el().attr):
             tk = None
+            still_empty_tk = None
         
-        # found one. Eat whitespace in between
+        self._flush_draft_el()
+        
         if tk:
             self.top().eat_whitespace()
         else:
-            # if none found create one
+            # if none found create a new one
             tk = self._append_el(FFElement('a'))
-        # if this was a draft token or none found, add url text as content
-        if not tk or tk == draft_tk:
+            still_empty_tk = tk
+
+        # if we don't get content, use the url as text
+        if still_empty_tk:
             tk.content.append(LineToken(_TEXT, url))
+
         el = tk.el()
         el.attr['href'] = url
         return pos
