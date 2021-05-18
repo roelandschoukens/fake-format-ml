@@ -204,11 +204,12 @@ class Lineparser:
         return None, ''
         
             
-    def parse(self, content):
+    def parse(self, content, /, end_mark=None):
 
         self._reset()
     
         pos = 0
+        end_mark_pos = None
         
         while True:
         
@@ -216,10 +217,19 @@ class Lineparser:
             pos += len(whitespace)
                 
             m = self.token_pat.search(content, pos)
+
+            # find end mark between current position and next recognise token:
+            if end_mark:
+                offs = content.find(end_mark, pos, m.start() if m else None)
+                if offs != -1:  
+                    end_mark_pos = offs
+                    m = None
+                
             if m:
                 # add intermediate text
                 new_pos = m.start()
                 txt = content[pos:new_pos]
+                
                 if txt:
                     self._append_text(whitespace)
                     self._append_text(txt)
@@ -243,14 +253,14 @@ class Lineparser:
             else:
                 # add final text
                 self._append_text(whitespace)
-                self._append_text(content[pos:])
+                self._append_text(content[pos:end_mark_pos])
                 break
               
         while len(self.stack) > 1:
             self._close_tag()
         
         self._emit_all(self.stack[0].content)
-        
+        return end_mark_pos
         
     # bookkeeping
     

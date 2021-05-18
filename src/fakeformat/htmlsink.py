@@ -235,6 +235,12 @@ class HtmlSink:
         f.el.tag = tag
         del tag
         
+        if '-ff-align' in attr:
+            a = attr['-ff-align']
+            attr['style'] = attr.get('style', '') + 'text-align: ' + a + ';'
+            del attr['-ff-align']
+            
+
         if 'href' in attr and self.url_hook:
             new_url = self.url_hook(attr['href'], 'href', f.el)
             if new_url:

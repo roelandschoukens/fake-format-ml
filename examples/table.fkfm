@@ -1,4 +1,13 @@
-Tables can be created using tags. A list tagged with `{tr}` will create `td`
+Small tables can be created with pipes and dashes:
+
+ID  | Animal | Sound
+---:+--------+---------
+  1 | Cat    | Meow
+  2 | Dog    | Woof
+
+The first and/or the last dash in the separator can be replaced with a colon to align columns.
+
+Bigger or more complex tables can be created using tags. A list tagged with `{tr}` will create `td`
 elements instead of `li`. And `#` bullets produce table headings:
 
 {table}

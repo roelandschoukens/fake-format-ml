@@ -269,6 +269,107 @@ def match_li(parser, line1):
 OrdListPattern = namedtuple('OrdListPattern', 'first next type')
 
 
+_pat_table = _re.compile(r"([: ]?)[-]{3,}([: ]?)")
+_pat_table = _re.compile(r"([: ]?)[-]{3,}([: ]?)")
+
+# == table blocks ==
+
+class Table_Block(FFBlock):
+
+    def __init__(self, outer_pipe, align):
+        """ A table block consists of rows of cells, separated by a pipe
+        
+        rows may have leading or trailing pipes as indicated by outer_pipe.
+        They ignore any indent, a table is terminated by an empty line"""
+        
+        super().__init__('table', '')
+        self.outer_pipe = outer_pipe
+        self.align = align
+    
+    # tables get terminated by blank lines by parse_hook
+    def match_indent(self, line):
+        return False
+
+    # every line is a separate block by definition. Use a nested list
+    # for more elaborate tables
+    def parse_hook(self, parser, line):
+        if parser.top().match_blank(line):
+            parser.end_block()
+            return True
+    
+        self._parse_line(parser, line, 'td')
+        return True
+    
+    def _parse_line(self, parser, line, cell_tag):
+        # table head, where '|' can terminate a block
+        line = _strip_outer_pipes(line, self.outer_pipe)
+        table_tr1 = FFBlock('tr', None)
+        parser.begin_block(table_tr1)
+        
+        pos = 0
+        align_i = iter(self.align)
+        while True:
+            bl = FFBlock(cell_tag, None)
+            align = next(align_i)
+            if align:
+                bl.attr['-ff-align'] = align
+            pos = parser.do_block(bl, line, end_mark='|')
+            if pos is None:
+                break
+            line = line[pos+1:]
+
+        parser.unwind(self)
+        
+
+def _strip_outer_pipes(line, outer_pipe):
+    if outer_pipe[0]:
+        line = line.lstrip()
+        if line.startswith('|'):
+            line = line[1:]
+    if outer_pipe[1]:
+        line = line.rstrip()
+        if line.endswith('|'):
+            line = line[:-1]
+    return line
+
+def match_table(parser, line1, line2):
+
+    # line 2 shall have a specific pattern:
+    if not '|' in line2:
+        return False
+
+    parts = line2.split('|')
+    outer_pipe = [False, False]
+    if parts[0] == '':
+        outer_pipe[0] = True
+        parts[:1] = []
+    if parts[-1] == '':
+        parts[-1:] = []
+        outer_pipe[1] = True
+    parts = [_pat_table.match(p) for p in parts]
+    if None in parts:
+        return
+        
+    def align(a, b):
+        if a == ':' and  b == ':':
+            return 'center'
+        if a == ':':
+            return 'left'
+        if b == ':':
+            return 'right'
+        return None
+    
+    column_align = [align(p[1], p[2]) for p in parts]
+
+    # OK so we have valid columns. Turn the first row into th cells
+    
+    table_bl = Table_Block(outer_pipe, column_align)
+    parser.begin_block(table_bl)
+    
+    table_bl._parse_line(parser, line1, 'th')
+    return True
+
+
 class FakeFormatStdBlocks:
     """ This adds the standard blocks to an otherwise 'empty' parser """
     
@@ -303,7 +404,7 @@ class FakeFormatStdBlocks:
         
         super().__init__(*args)
         self.first_matchers += [match_dingbat, match_li, match_note, match_quote]
-        self.first_2_matchers += [match_head, match_h_li, match_code, match_info_box]
+        self.first_2_matchers += [match_head, match_h_li, match_code, match_info_box, match_table]
         self.single_matchers += [match_hr, match_small_head]
         
         self._ord_list_pat = None

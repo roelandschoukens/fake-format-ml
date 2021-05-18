@@ -407,25 +407,29 @@ class FakeFormatBase:
         assert self.stack, "Root block was popped"
 
 
-    def do_block(self, bl, content=None):
+    def do_block(self, bl, content=None, end_mark=None):
         """ Add a child block, with an optional line of content
 
         if content is None, the block will be 'empty', this bit of
         info is available to the sink.
 
         If not, content is added and parsed as in line content, without wrapping p.
+        
+        if not verbatim, you can use end_mark to specify where the line parser will stop.
 
         This assumes the line buffer is empty. This is guaranteed when a
         matcher is called. """
         self.begin_block(bl, empty=(content is None))
+        end_pos = None
         if content:
             if bl.verbatim:
                 # verbatim (no line elements)
                 self.sink.add_content(content)
             else:
                 # parse content of this paragraph with inline parser
-                self.lineparser.parse(content)
+                end_pos = self.lineparser.parse(content, end_mark=end_mark)
         self.end_block(empty=(content is None))
+        return end_pos
 
 
 
